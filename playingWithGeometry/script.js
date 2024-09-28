@@ -11,18 +11,24 @@ const boxMaterial = new THREE.MeshBasicMaterial({color : 'blue'})
 const box = new THREE.Mesh(boxGeometry, boxMaterial)
 
 
+scene.add(box)
+
 //Sizes
 const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+    width: 800,
+    height: 600
 }
 
 //Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
+camera.position.z = 3
+scene.add(camera)
+
 
 //Rendering
 const renderer = new THREE.WebGLRenderer(
 {   
     canvas : canvas
 })
-
+renderer.setSize(sizes.width, sizes.height)
+renderer.render(scene, camera)
