@@ -11,12 +11,8 @@ const gui = new GUI({
 })
 gui.close()
 
-//Debug objects
+//Debug object
 const debugObject = {}
-const debugIcosaObject = {}
-const debugOctaObject = {}
-const debugSphereObject = {}
-const debugTorusObject = {}
 
 const canvas = document.querySelector('canvas.webgl');
 
@@ -56,15 +52,67 @@ boxTweaks
     .add(boxMaterial, 'wireframe')
     .name('Wireframe')
 
+boxTweaks
+    .addColor(debugObject, 'color')
+    .onChange(() => {
+        boxMaterial.color.set(debugObject.color)
+    })
+    .name('Color')
+
+debugObject.subdivision = 2
+boxTweaks
+    .add(debugObject, 'subdivision')
+    .min(1)
+    .max(20)
+    .step(1)
+    .onFinishChange(() => {
+        
+        box.geometry.dispose()
+        box.geometry = new THREE.BoxGeometry(
+            1.5, 1.5, 1.5, 
+            debugObject.subdivision, debugObject.subdivision, debugObject.subdivision)
+
+    })
+    .name('Subdivision')
+
+   
+
 //Icosahedron
 const icoGeometry = new THREE.IcosahedronGeometry(1, 1)
 const icoMaterial = new THREE.MeshBasicMaterial({color : debugObject.color})
 icoMaterial.wireframe = true
 const ico = new THREE.Mesh(icoGeometry, icoMaterial)
+
 ico.position.set(Math.cos((2 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((2 / numGeometries) * Math.PI * 2) * radius)
 
-
+const icoTweaks = gui.addFolder('Icosahedron')
+icoTweaks
+    .add(ico, 'visible')
+    .name('Icosahedron Visibility')
+ 
+icoTweaks
+    .add(icoMaterial, 'wireframe')
+    .name('Wireframe')
+ 
+icoTweaks
+    .addColor(debugObject, 'color')
+    .onChange(() => {
+        icoMaterial.color.set(debugObject.color)
+    })
+    .name('Color')
+ 
+debugObject.details = 1
+icoTweaks
+    .add(debugObject, 'details')
+    .min(0)
+    .max(4)
+    .step(1)
+    .onFinishChange(() => {     
+        ico.geometry.dispose()
+        ico.geometry = new THREE.IcosahedronGeometry(1, debugObject.details)
+    })
+    .name('Subdivision')
 
 geometryGroup.add(box, ico)
 
@@ -88,37 +136,6 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-//Fullscreen renderer
-window.addEventListener('dblclick', () => {
-
-    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
-
-    if(!fullscreenElement)
-    {
-        //if the web browser supports requestFullscreen
-        if (canvas.requestFullscreen)
-        {
-            canvas.requestFullscreen()
-        }
-        // if not let's check webkitRequestFullscreen
-        else if (canvas.webkitRequestFullscreen)
-        {
-            canvas.webkitRequestFullscreen()
-        }
-    }
-    else 
-    {
-        //Same for exit fullscreen
-        if (document.exitFullscreen)
-        {
-            document.exitFullscreen()
-        }
-        else if (document.webkitExitFullscreen)
-        {
-            document.webkitExitFullscreen()
-        }
-    }
-})
 
 //Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
