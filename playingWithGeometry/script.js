@@ -1,5 +1,22 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import GUI from 'lil-gui'
+
+/**
+ * GUI
+ */
+const gui = new GUI({
+    title: 'Geometries Controler',
+    closeFolders: true
+})
+gui.close()
+
+//Debug objects
+const debugObject = {}
+const debugIcosaObject = {}
+const debugOctaObject = {}
+const debugSphereObject = {}
+const debugTorusObject = {}
 
 const canvas = document.querySelector('canvas.webgl');
 
@@ -13,31 +30,43 @@ const axesHelpers = new THREE.AxesHelper();
 /**
  * Objects
  */
-const numGeometries = 8
-const radius = 5
+const numGeometries = 5
+const radius = 4
 
 const geometryGroup = new THREE.Group()
 scene.add(geometryGroup)
 
 //Box
-const box = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({color : 'red'})
-)
+debugObject.color = 'blue'
+const boxGeometry = new THREE.BoxGeometry(1.5, 1.5, 1.5, 2, 2, 2)
+const boxMaterial = new THREE.MeshBasicMaterial({color : debugObject.color})
+boxMaterial.wireframe = true
+const box = new THREE.Mesh(boxGeometry, boxMaterial)
+
 box.position.set(Math.cos((1 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((1 / numGeometries) * Math.PI * 2) * radius)
 
-//Cone
-const cone = new THREE.Mesh(
-    new THREE.ConeGeometry(1, 1, 3),
-    new THREE.MeshBasicMaterial({color : 'blue'})
-)
-cone.position.set(Math.cos((2 / numGeometries) * Math.PI * 2) * radius, 0,
+const boxTweaks = gui.addFolder('Box')
+
+boxTweaks
+    .add(box, 'visible')
+    .name('Box Visibility')
+
+boxTweaks
+    .add(boxMaterial, 'wireframe')
+    .name('Wireframe')
+
+//Icosahedron
+const icoGeometry = new THREE.IcosahedronGeometry(1, 1)
+const icoMaterial = new THREE.MeshBasicMaterial({color : debugObject.color})
+icoMaterial.wireframe = true
+const ico = new THREE.Mesh(icoGeometry, icoMaterial)
+ico.position.set(Math.cos((2 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((2 / numGeometries) * Math.PI * 2) * radius)
 
 
 
-geometryGroup.add(box, cone)
+geometryGroup.add(box, ico)
 
 
 //Sizes
@@ -92,8 +121,10 @@ window.addEventListener('dblclick', () => {
 })
 
 //Camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 1000)
-camera.position.z = 3
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+camera.position.x = 3
+camera.position.y = 1
+camera.position.z = 10
 scene.add(camera)
 
 //Orbit Controls
