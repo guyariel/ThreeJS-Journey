@@ -27,7 +27,7 @@ const axesHelpers = new THREE.AxesHelper();
  * Objects
  */
 const numGeometries = 5
-const radius = 4
+const radius = 3
 
 const geometryGroup = new THREE.Group()
 scene.add(geometryGroup)
@@ -75,10 +75,9 @@ boxTweaks
     })
     .name('Subdivision')
 
-   
 
 //Icosahedron
-const icoGeometry = new THREE.IcosahedronGeometry(1, 1)
+const icoGeometry = new THREE.IcosahedronGeometry(1, 0)
 const icoMaterial = new THREE.MeshBasicMaterial({color : debugObject.color})
 icoMaterial.wireframe = true
 const ico = new THREE.Mesh(icoGeometry, icoMaterial)
@@ -114,7 +113,37 @@ icoTweaks
     })
     .name('Subdivision')
 
-geometryGroup.add(box, ico)
+//Sphere 
+const sphereGeometry = new THREE.SphereGeometry(1, 12, 10)
+const sphereMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial) 
+sphereMaterial.wireframe = true
+
+sphere.position.set(Math.cos((3 / numGeometries) * Math.PI * 2) * radius, 0,
+ Math.sin((3 / numGeometries) * Math.PI * 2) * radius)
+
+
+//Torus
+const torusGeometry = new THREE.TorusGeometry(0.7, 0.4, 12, 48)
+const torusMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
+const torus = new THREE.Mesh(torusGeometry, torusMaterial) 
+torusMaterial.wireframe = true
+
+torus.position.set(Math.cos((4 / numGeometries) * Math.PI * 2) * radius, 0,
+ Math.sin((4 / numGeometries) * Math.PI * 2) * radius)
+
+
+//Octahedron
+const octaGeometry = new THREE.OctahedronGeometry(1,1)
+const octaMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
+const octa = new THREE.Mesh(octaGeometry, octaMaterial) 
+octaMaterial.wireframe = true
+
+octa.position.set(Math.cos((5 / numGeometries) * Math.PI * 2) * radius, 0,
+ Math.sin((5 / numGeometries) * Math.PI * 2) * radius)
+
+geometryGroup.add(box, ico, sphere, torus, octa)
+
 
 
 //Sizes
@@ -159,7 +188,24 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
 //Animation
+
+const clock = new THREE.Clock()
+
 const tick = () => {
+
+    const elapsedTime = clock.getElapsedTime()
+
+    sphere.rotation.y = 0.2 * elapsedTime
+    box.rotation.y = 0.2 * elapsedTime
+    torus.rotation.y = 0.2 * elapsedTime
+    octa.rotation.y = 0.2 * elapsedTime
+    ico.rotation.y = 0.2 * elapsedTime
+
+    sphere.rotation.x = -0.2 * elapsedTime
+    box.rotation.x = -0.2 * elapsedTime
+    torus.rotation.x = -0.2 * elapsedTime
+    octa.rotation.x = -0.2 * elapsedTime
+    ico.rotation.x = -0.2 * elapsedTime
 
     //Update controls
     controls.update()
