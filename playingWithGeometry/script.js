@@ -27,7 +27,7 @@ const axesHelpers = new THREE.AxesHelper();
  * Objects
  */
 const numGeometries = 5
-const radius = 3
+const radius = 4
 
 const geometryGroup = new THREE.Group()
 scene.add(geometryGroup)
@@ -184,6 +184,7 @@ const renderer = new THREE.WebGLRenderer(
     canvas : canvas
 })
 renderer.setSize(sizes.width, sizes.height)
+renderer.setClearColor('grey')
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
@@ -206,6 +207,8 @@ const tick = () => {
     torus.rotation.x = -0.2 * elapsedTime
     octa.rotation.x = -0.2 * elapsedTime
     ico.rotation.x = -0.2 * elapsedTime
+
+    geometryGroup.rotation.y = 0.2 * elapsedTime
 
     //Update controls
     controls.update()
