@@ -26,7 +26,7 @@ const axesHelpers = new THREE.AxesHelper();
 /**
  * Objects
  */
-const numGeometries = 5
+const numGeometries = 6
 const radius = 4
 
 const geometryGroup = new THREE.Group()
@@ -122,6 +122,47 @@ sphereMaterial.wireframe = true
 sphere.position.set(Math.cos((3 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((3 / numGeometries) * Math.PI * 2) * radius)
 
+const sphereTweaks = gui.addFolder('Sphere')
+
+sphereTweaks
+    .add(sphereMaterial,'wireframe')
+    .name('Wireframe')
+
+sphereTweaks
+    .add(sphere, 'visible')
+    .name('Visibility')
+
+sphereTweaks
+    .addColor(debugObject, 'color')
+    .onChange(() => {
+        sphereMaterial.color.set(debugObject.color)
+    })
+    .name('Color')
+
+debugObject.widthSegments = 12
+debugObject.heightSegments = 10 
+sphereTweaks
+    .add(debugObject, 'widthSegments')
+    .min(3)
+    .max(25)
+    .step(1)
+    .onFinishChange(() => {     
+        sphere.geometry.dispose()
+        sphere.geometry = new THREE.SphereGeometry(1, debugObject.widthSegments, 10)
+    })
+    .name('Width Segments')
+sphereTweaks
+    .add(debugObject, 'heightSegments')
+    .min(2)
+    .max(20)
+    .step(1)
+    .onFinishChange(() => {     
+        sphere.geometry.dispose()
+        sphere.geometry = new THREE.SphereGeometry(1, debugObject.widthSegments, debugObject.heightSegments)
+    })
+    .name('Height Segments')
+
+
 
 //Torus
 const torusGeometry = new THREE.TorusGeometry(0.7, 0.4, 12, 48)
@@ -131,6 +172,23 @@ torusMaterial.wireframe = true
 
 torus.position.set(Math.cos((4 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((4 / numGeometries) * Math.PI * 2) * radius)
+
+const torusTweaks = gui.addFolder('Torus')
+
+torusTweaks
+    .add(torusMaterial,'wireframe')
+    .name('Wireframe')
+
+torusTweaks
+    .add(torus, 'visible')
+    .name('Visibility')
+
+torusTweaks
+    .addColor(debugObject, 'color')
+    .onChange(() => {
+        torusMaterial.color.set(debugObject.color)
+    })
+    .name('Color')
 
 
 //Octahedron
@@ -142,7 +200,51 @@ octaMaterial.wireframe = true
 octa.position.set(Math.cos((5 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((5 / numGeometries) * Math.PI * 2) * radius)
 
-geometryGroup.add(box, ico, sphere, torus, octa)
+
+const octaTweaks = gui.addFolder('Octahedron')
+
+octaTweaks
+    .add(octaMaterial,'wireframe')
+    .name('Wireframe')
+
+octaTweaks
+    .add(octa, 'visible')
+    .name('Visibility')
+
+octaTweaks
+    .addColor(debugObject, 'color')
+    .onChange(() => {
+        octaMaterial.color.set(debugObject.color)
+    })
+    .name('Color')
+
+
+//Cone
+ const coneGeometry = new THREE.ConeGeometry(1, 1, 8)
+ const coneMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
+ const cone = new THREE.Mesh(coneGeometry, coneMaterial) 
+ coneMaterial.wireframe = true
+ 
+ cone.position.set(Math.cos((6 / numGeometries) * Math.PI * 2) * radius, 0,
+  Math.sin((6 / numGeometries) * Math.PI * 2) * radius)
+
+const coneTweaks = gui.addFolder('Cone')
+coneTweaks
+    .add(coneMaterial,'wireframe')
+    .name('Wireframe')
+
+coneTweaks
+    .add(cone, 'visible')
+    .name('Visibility')
+
+coneTweaks
+    .addColor(debugObject, 'color')
+    .onChange(() => {
+        coneMaterial.color.set(debugObject.color)
+    })
+    .name('Color')
+
+geometryGroup.add(box, ico, sphere, torus, octa, cone)
 
 
 
@@ -165,13 +267,24 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
+scene.background = new THREE.Color(0xa0a0a0)
+scene.fog = new THREE.Fog(0xa0a0a0, 10, 500)
 
 //Camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 3
-camera.position.y = 1
-camera.position.z = 10
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 500)
+camera.position.set(3, 1, 10)
 scene.add(camera)
+
+
+//Ground
+const ground = new THREE.Mesh( 
+    new THREE.PlaneGeometry(1000, 1000),
+    new THREE.MeshBasicMaterial({color: 'grey'}))
+    //new THREE.MeshPhongMaterial({color: 'red', specular: 0x474747}))
+ground.rotation.x = - Math.PI / 2
+ground.position.y = -11
+ground.receiveShadow = true
+scene.add(ground)
 
 //Orbit Controls
 const controls = new OrbitControls(camera, canvas)
@@ -184,7 +297,7 @@ const renderer = new THREE.WebGLRenderer(
     canvas : canvas
 })
 renderer.setSize(sizes.width, sizes.height)
-renderer.setClearColor('grey')
+//renderer.setClearColor('grey')
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
@@ -201,12 +314,16 @@ const tick = () => {
     torus.rotation.y = 0.2 * elapsedTime
     octa.rotation.y = 0.2 * elapsedTime
     ico.rotation.y = 0.2 * elapsedTime
+    cone.rotation.y = 0.2 * elapsedTime
+
 
     sphere.rotation.x = -0.2 * elapsedTime
     box.rotation.x = -0.2 * elapsedTime
     torus.rotation.x = -0.2 * elapsedTime
     octa.rotation.x = -0.2 * elapsedTime
     ico.rotation.x = -0.2 * elapsedTime
+    cone.rotation.x = -0.2 * elapsedTime
+
 
     geometryGroup.rotation.y = 0.2 * elapsedTime
 
