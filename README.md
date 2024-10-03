@@ -1,6 +1,6 @@
 # ThreeJS-Journey
 
-## Playing With Geometry 🌐
+## Playing With Geometries 🌐
 
 Geometrical figures are fun and have many properties. 
 
