@@ -3,22 +3,30 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 
+
 //Scene
 const scene = new THREE.Scene()
 
 //Canvas
 const canvas = document.querySelector('canvas.webgl')
 
+//Textures 
+const textureLoader = new THREE.TextureLoader()
+const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
+matcapTexture.colorSpace = THREE.SRGBColorSpace
+
+
 //Object
 const geometry = new THREE.BoxGeometry(1,1,1)
-const material = new THREE.MeshBasicMaterial({color: 'blue'})
+const material = new THREE.MeshMatcapMaterial()
+material.matcap = matcapTexture
+
+//material.matcap = matcapTexture 
 const mesh = new THREE.Mesh(geometry, material)
 
 mesh.position.set(0,0,0)
 
 scene.add(mesh)
-
-
 
 
 //Sizes
