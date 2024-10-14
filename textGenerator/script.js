@@ -10,9 +10,9 @@ const scene = new THREE.Scene()
 //Canvas
 const canvas = document.querySelector('canvas.webgl')
 
-//Textures 
+//Textures
 const textureLoader = new THREE.TextureLoader()
-const matcapTexture = textureLoader.load('/textures/matcaps/6.png')
+const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
 matcapTexture.colorSpace = THREE.SRGBColorSpace
 
 
@@ -21,30 +21,49 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace
 //Fonts
 const fontLoader = new FontLoader()
 
-fontLoader.load('/fonts/helvetiker_regular.typeface.json',
+let text = null
+// Array of preloaded texts
+const texts = ['Hey lunaa', 
+    'Welcome to Three.js', 
+    'Creative Coding', 
+    'Interactive 3D World']
 
-    (font) => {
-        const textGeometry = new TextGeometry(
-            'Hey lunaa',
-            {
-                font,
-                size: 0.5,
-                depth: 0.2,
-                curveSegments: 5,
-                bevelEnabled: true,
-                bevelThickness: 0.03,
-                bevelSize: 0.02,
-                bevelOffset: 0,
-                bevelSegments: 4
-            }
-        )
-        textGeometry.center()
-        const material = new THREE.MeshMatcapMaterial()
-        material.matcap = matcapTexture
-        const text = new THREE.Mesh(textGeometry, material)
-        scene.add(text)
-    }
-)
+// Get a random index on page load
+const randomIndex = Math.floor(Math.random() * texts.length)
+
+
+const createText = (textValue) => {
+
+    fontLoader.load('/fonts/helvetiker_regular.typeface.json',
+        (font) => {
+            const textGeometry = new TextGeometry(
+                textValue,
+                {
+                    font,
+                    size: 0.5,
+                    depth: 0.2,
+                    curveSegments: 5,
+                    bevelEnabled: true,
+                    bevelThickness: 0.03,
+                    bevelSize: 0.02,
+                    bevelOffset: 0,
+                    bevelSegments: 4
+                }
+            )
+            textGeometry.center()
+
+            // Remove old text mesh
+            if (text) scene.remove(text)
+
+            const material = new THREE.MeshMatcapMaterial()
+            material.matcap = matcapTexture
+            text = new THREE.Mesh(textGeometry, material)
+            scene.add(text)
+        }
+    )
+}
+
+createText(texts[randomIndex])
 
 //Sizes
 const sizes = {
@@ -68,7 +87,7 @@ window.addEventListener('resize', () =>
 })
 
 //Camera
-const camera = new THREE.PerspectiveCamera(85, sizes.width / sizes.height, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(120, sizes.width / sizes.height, 0.1, 100)
 camera.position.set(0, 0, 2)
 scene.add(camera)
 
@@ -100,5 +119,4 @@ const tick = () =>
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
-
 tick()
