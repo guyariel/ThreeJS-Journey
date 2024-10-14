@@ -12,22 +12,39 @@ const canvas = document.querySelector('canvas.webgl')
 
 //Textures 
 const textureLoader = new THREE.TextureLoader()
-const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
+const matcapTexture = textureLoader.load('/textures/matcaps/6.png')
 matcapTexture.colorSpace = THREE.SRGBColorSpace
 
 
-//Object
-const geometry = new THREE.BoxGeometry(1,1,1)
-const material = new THREE.MeshMatcapMaterial()
-material.matcap = matcapTexture
+//Text Geometry
 
-//material.matcap = matcapTexture 
-const mesh = new THREE.Mesh(geometry, material)
+//Fonts
+const fontLoader = new FontLoader()
 
-mesh.position.set(0,0,0)
+fontLoader.load('/fonts/helvetiker_regular.typeface.json',
 
-scene.add(mesh)
-
+    (font) => {
+        const textGeometry = new TextGeometry(
+            'Hey lunaa',
+            {
+                font,
+                size: 0.5,
+                depth: 0.2,
+                curveSegments: 5,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0.02,
+                bevelOffset: 0,
+                bevelSegments: 4
+            }
+        )
+        textGeometry.center()
+        const material = new THREE.MeshMatcapMaterial()
+        material.matcap = matcapTexture
+        const text = new THREE.Mesh(textGeometry, material)
+        scene.add(text)
+    }
+)
 
 //Sizes
 const sizes = {
@@ -70,7 +87,6 @@ renderer.render(scene, camera)
 /**
  * Animate
  */
-
 const clock = new THREE.Clock()
 
 const tick = () =>
