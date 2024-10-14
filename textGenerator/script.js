@@ -1,4 +1,7 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 
 //Scene
 const scene = new THREE.Scene()
@@ -14,6 +17,9 @@ const mesh = new THREE.Mesh(geometry, material)
 mesh.position.set(0,0,0)
 
 scene.add(mesh)
+
+
+
 
 //Sizes
 const sizes = {
@@ -41,6 +47,9 @@ const camera = new THREE.PerspectiveCamera(85, sizes.width / sizes.height, 0.1, 
 camera.position.set(0, 0, 2)
 scene.add(camera)
 
+//Controls
+const controls = new OrbitControls(camera, canvas)
+controls.enableDamping = true
 
 //Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -49,3 +58,23 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.render(scene, camera)
+
+/**
+ * Animate
+ */
+
+const clock = new THREE.Clock()
+
+const tick = () =>
+{
+    //Update controls
+    controls.update()
+
+    // Render
+    renderer.render(scene, camera)
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick)
+}
+
+tick()
