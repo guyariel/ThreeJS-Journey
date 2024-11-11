@@ -22,6 +22,7 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace
 const fontLoader = new FontLoader()
 
 let text = null
+
 // Array of preloaded texts
 const texts = ['Hey lunaa', 
     'Welcome to Three.js', 
@@ -112,7 +113,7 @@ const tick = () =>
 {
     //Update controls
     controls.update()
-
+    
     // Render
     renderer.render(scene, camera)
 
