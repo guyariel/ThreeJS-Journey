@@ -52,15 +52,34 @@ house.add(roof)
 //The door
 const door = new THREE.Mesh(
     new THREE.PlaneGeometry(2.1, 2.1),
-    new THREE.MeshStandardMaterial(
-        {
-            color: 'red'
-        }
-    )
+    new THREE.MeshStandardMaterial()
 )
 door.position.y = 1
-door.position.z = 2
+door.position.z = 2 + 0.01
 house.add(door)
+
+//bushes
+const bushesGeometry = new THREE.SphereGeometry(1, 16, 16)
+const bushesMaterial = new THREE.MeshStandardMaterial()
+
+const bush1 = new THREE.Mesh(bushesGeometry, bushesMaterial)
+bush1.position.set(0.8, 0.2, 2.2)
+bush1.scale.set(0.5, 0.5, 0.5)
+
+
+const bush2 = new THREE.Mesh(bushesGeometry, bushesMaterial)
+bush2.position.set(1.4, 0.1, 2.1)
+bush2.scale.set(0.25, 0.25, 0.25)
+
+const bush3 = new THREE.Mesh(bushesGeometry, bushesMaterial)
+bush3.position.set(-0.8, 0.1, 2.2)
+bush3.scale.set(0.4, 0.4, 0.4)
+
+const bush4 = new THREE.Mesh(bushesGeometry, bushesMaterial)
+bush4.position.set(-1, 0.05, 2.6)
+bush4.scale.set(0.15, 0.15, 0.15)
+
+house.add(bush1, bush2, bush3, bush4)
 
 
 /**
