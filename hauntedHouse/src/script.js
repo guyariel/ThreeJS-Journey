@@ -16,13 +16,27 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
+ * Textures
+ */
+
+const textureLoader = new THREE.TextureLoader()
+
+//The floor
+const floorAlphaTexture = textureLoader.load('./floor/alpha.jpg')
+
+
+
+/**
  * House
  */
 
 //The floor
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(20, 20),
-    new THREE.MeshStandardMaterial()
+    new THREE.MeshStandardMaterial({
+        alphaMap: floorAlphaTexture,
+        transparent: true
+    })
 )
 scene.add(floor)
 
