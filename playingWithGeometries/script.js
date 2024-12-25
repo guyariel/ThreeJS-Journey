@@ -7,8 +7,18 @@ import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js'
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
-const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
-matcapTexture.colorSpace = THREE.SRGBColorSpace
+
+const textures = [
+    textureLoader.load('/textures/matcaps/1.png'),
+    textureLoader.load('/textures/matcaps/2.png'),
+    textureLoader.load('/textures/matcaps/3.png'),
+    textureLoader.load('/textures/matcaps/4.png'),
+    textureLoader.load('/textures/matcaps/5.png'),
+    textureLoader.load('/textures/matcaps/6.png'),
+    textureLoader.load('/textures/matcaps/7.png'),
+    textureLoader.load('/textures/matcaps/8.png'),
+    textureLoader.load('/textures/matcaps/9.png'),
+]
 
 /**
  * GUI
@@ -44,7 +54,6 @@ scene.add(ambientLight)
  */
 
 const material = new THREE.MeshMatcapMaterial()
-material.matcap = matcapTexture
 
 const numGeometries = 6
 const radius = 4
@@ -139,7 +148,6 @@ geometryGroup.position.y = -5
 //Ground
 const ground = new THREE.Mesh( 
     new THREE.PlaneGeometry(1000, 1000),
-    //new THREE.MeshBasicMaterial({color: 'grey'}),
     new THREE.MeshPhongMaterial({color: 0xcbcbcb, depthWrite: false})
 
 )
@@ -191,6 +199,16 @@ renderer.setSize(sizes.width, sizes.height)
 //renderer.setClearColor('grey')
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+//Change Texture
+
+const changeTexture = () => {
+    const randomTexture = textures[Math.floor(Math.random() * textures.length)];
+    randomTexture.colorSpace = THREE.SRGBColorSpace
+    material.matcap = randomTexture;
+    material.needsUpdate = true; 
+};
+
+gui.add({changeTexture}, 'changeTexture').name('Change Texture');
 
 //Animation
 const clock = new THREE.Clock()
