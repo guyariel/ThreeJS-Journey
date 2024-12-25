@@ -18,10 +18,18 @@ const canvas = document.querySelector('canvas.webgl');
 
 //Scene
 const scene = new THREE.Scene()
+scene.background = new THREE.Color(0xa0a0a0);
+scene.fog = new THREE.Fog(0xa0a0a0, 10, 50);
 
-//Axes Helpers
-const axesHelpers = new THREE.AxesHelper();
-//scene.add(axesHelpers)
+
+/**
+ * Lights
+ */
+// Ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.9)
+gui.add(ambientLight, 'intensity').min(0).max(3).step(0.001)
+scene.add(ambientLight)
+
 
 /**
  * Objects
@@ -35,7 +43,7 @@ scene.add(geometryGroup)
 //Box
 debugObject.color = 'blue'
 const boxGeometry = new THREE.BoxGeometry(1.5, 1.5, 1.5, 2, 2, 2)
-const boxMaterial = new THREE.MeshBasicMaterial({color : debugObject.color})
+const boxMaterial = new THREE.MeshStandardMaterial({color : debugObject.color})
 boxMaterial.wireframe = true
 const box = new THREE.Mesh(boxGeometry, boxMaterial)
 
@@ -75,7 +83,7 @@ boxTweaks
     })
     .name('Subdivision')
 
-
+    
 //Icosahedron
 const icoGeometry = new THREE.IcosahedronGeometry(1, 0)
 const icoMaterial = new THREE.MeshBasicMaterial({color : debugObject.color})
@@ -246,6 +254,19 @@ coneTweaks
 
 geometryGroup.add(box, ico, sphere, torus, octa, cone)
 
+geometryGroup.position.y = -5
+
+//Ground
+const ground = new THREE.Mesh( 
+    new THREE.PlaneGeometry(1000, 1000),
+    //new THREE.MeshBasicMaterial({color: 'grey'}),
+    new THREE.MeshPhongMaterial({color: 0xcbcbcb, depthWrite: false})
+
+)
+ground.rotation.x = - Math.PI / 2
+ground.position.y = -11
+ground.receiveShadow = true
+scene.add(ground)
 
 
 //Sizes
@@ -253,6 +274,7 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
+
 
 //Resize Event
 window.addEventListener('resize', () => {
@@ -267,24 +289,13 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-scene.background = new THREE.Color(0xa0a0a0)
-scene.fog = new THREE.Fog(0xa0a0a0, 10, 500)
 
 //Camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 500)
-camera.position.set(3, 1, 10)
+const camera = new THREE.PerspectiveCamera(80, sizes.width / sizes.height, 1, 500)
+camera.position.set(3, -5, 19)
+camera.rotation.x = - Math.PI / 6
 scene.add(camera)
 
-
-//Ground
-const ground = new THREE.Mesh( 
-    new THREE.PlaneGeometry(1000, 1000),
-    new THREE.MeshBasicMaterial({color: 'grey'}))
-    //new THREE.MeshPhongMaterial({color: 'red', specular: 0x474747}))
-ground.rotation.x = - Math.PI / 2
-ground.position.y = -11
-ground.receiveShadow = true
-scene.add(ground)
 
 //Orbit Controls
 const controls = new OrbitControls(camera, canvas)
@@ -302,7 +313,6 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
 //Animation
-
 const clock = new THREE.Clock()
 
 const tick = () => {
