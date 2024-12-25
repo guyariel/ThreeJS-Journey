@@ -1,6 +1,14 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui'
+import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js'
+
+/**
+ * Textures
+ */
+const textureLoader = new THREE.TextureLoader()
+const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
+matcapTexture.colorSpace = THREE.SRGBColorSpace
 
 /**
  * GUI
@@ -18,7 +26,7 @@ const canvas = document.querySelector('canvas.webgl');
 
 //Scene
 const scene = new THREE.Scene()
-scene.background = new THREE.Color(0xa0a0a0);
+scene.background = new THREE.Color('grey');
 scene.fog = new THREE.Fog(0xa0a0a0, 10, 50);
 
 
@@ -34,6 +42,10 @@ scene.add(ambientLight)
 /**
  * Objects
  */
+
+const material = new THREE.MeshMatcapMaterial()
+material.matcap = matcapTexture
+
 const numGeometries = 6
 const radius = 4
 
@@ -43,9 +55,7 @@ scene.add(geometryGroup)
 //Box
 debugObject.color = 'blue'
 const boxGeometry = new THREE.BoxGeometry(1.5, 1.5, 1.5, 2, 2, 2)
-const boxMaterial = new THREE.MeshStandardMaterial({color : debugObject.color})
-boxMaterial.wireframe = true
-const box = new THREE.Mesh(boxGeometry, boxMaterial)
+const box = new THREE.Mesh(boxGeometry, material)
 
 box.position.set(Math.cos((1 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((1 / numGeometries) * Math.PI * 2) * radius)
@@ -56,39 +66,10 @@ boxTweaks
     .add(box, 'visible')
     .name('Box Visibility')
 
-boxTweaks
-    .add(boxMaterial, 'wireframe')
-    .name('Wireframe')
-
-boxTweaks
-    .addColor(debugObject, 'color')
-    .onChange(() => {
-        boxMaterial.color.set(debugObject.color)
-    })
-    .name('Color')
-
-debugObject.subdivision = 2
-boxTweaks
-    .add(debugObject, 'subdivision')
-    .min(1)
-    .max(20)
-    .step(1)
-    .onFinishChange(() => {
-        
-        box.geometry.dispose()
-        box.geometry = new THREE.BoxGeometry(
-            1.5, 1.5, 1.5, 
-            debugObject.subdivision, debugObject.subdivision, debugObject.subdivision)
-
-    })
-    .name('Subdivision')
-
     
 //Icosahedron
 const icoGeometry = new THREE.IcosahedronGeometry(1, 0)
-const icoMaterial = new THREE.MeshBasicMaterial({color : debugObject.color})
-icoMaterial.wireframe = true
-const ico = new THREE.Mesh(icoGeometry, icoMaterial)
+const ico = new THREE.Mesh(icoGeometry, material)
 
 ico.position.set(Math.cos((2 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((2 / numGeometries) * Math.PI * 2) * radius)
@@ -98,34 +79,9 @@ icoTweaks
     .add(ico, 'visible')
     .name('Icosahedron Visibility')
  
-icoTweaks
-    .add(icoMaterial, 'wireframe')
-    .name('Wireframe')
- 
-icoTweaks
-    .addColor(debugObject, 'color')
-    .onChange(() => {
-        icoMaterial.color.set(debugObject.color)
-    })
-    .name('Color')
- 
-debugObject.details = 1
-icoTweaks
-    .add(debugObject, 'details')
-    .min(0)
-    .max(4)
-    .step(1)
-    .onFinishChange(() => {     
-        ico.geometry.dispose()
-        ico.geometry = new THREE.IcosahedronGeometry(1, debugObject.details)
-    })
-    .name('Subdivision')
-
 //Sphere 
 const sphereGeometry = new THREE.SphereGeometry(1, 12, 10)
-const sphereMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
-const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial) 
-sphereMaterial.wireframe = true
+const sphere = new THREE.Mesh(sphereGeometry, material) 
 
 sphere.position.set(Math.cos((3 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((3 / numGeometries) * Math.PI * 2) * radius)
@@ -133,50 +89,12 @@ sphere.position.set(Math.cos((3 / numGeometries) * Math.PI * 2) * radius, 0,
 const sphereTweaks = gui.addFolder('Sphere')
 
 sphereTweaks
-    .add(sphereMaterial,'wireframe')
-    .name('Wireframe')
-
-sphereTweaks
     .add(sphere, 'visible')
     .name('Visibility')
 
-sphereTweaks
-    .addColor(debugObject, 'color')
-    .onChange(() => {
-        sphereMaterial.color.set(debugObject.color)
-    })
-    .name('Color')
-
-debugObject.widthSegments = 12
-debugObject.heightSegments = 10 
-sphereTweaks
-    .add(debugObject, 'widthSegments')
-    .min(3)
-    .max(25)
-    .step(1)
-    .onFinishChange(() => {     
-        sphere.geometry.dispose()
-        sphere.geometry = new THREE.SphereGeometry(1, debugObject.widthSegments, 10)
-    })
-    .name('Width Segments')
-sphereTweaks
-    .add(debugObject, 'heightSegments')
-    .min(2)
-    .max(20)
-    .step(1)
-    .onFinishChange(() => {     
-        sphere.geometry.dispose()
-        sphere.geometry = new THREE.SphereGeometry(1, debugObject.widthSegments, debugObject.heightSegments)
-    })
-    .name('Height Segments')
-
-
-
 //Torus
 const torusGeometry = new THREE.TorusGeometry(0.7, 0.4, 12, 48)
-const torusMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
-const torus = new THREE.Mesh(torusGeometry, torusMaterial) 
-torusMaterial.wireframe = true
+const torus = new THREE.Mesh(torusGeometry, material) 
 
 torus.position.set(Math.cos((4 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((4 / numGeometries) * Math.PI * 2) * radius)
@@ -184,26 +102,12 @@ torus.position.set(Math.cos((4 / numGeometries) * Math.PI * 2) * radius, 0,
 const torusTweaks = gui.addFolder('Torus')
 
 torusTweaks
-    .add(torusMaterial,'wireframe')
-    .name('Wireframe')
-
-torusTweaks
     .add(torus, 'visible')
     .name('Visibility')
 
-torusTweaks
-    .addColor(debugObject, 'color')
-    .onChange(() => {
-        torusMaterial.color.set(debugObject.color)
-    })
-    .name('Color')
-
-
 //Octahedron
 const octaGeometry = new THREE.OctahedronGeometry(1,1)
-const octaMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
-const octa = new THREE.Mesh(octaGeometry, octaMaterial) 
-octaMaterial.wireframe = true
+const octa = new THREE.Mesh(octaGeometry, material) 
 
 octa.position.set(Math.cos((5 / numGeometries) * Math.PI * 2) * radius, 0,
  Math.sin((5 / numGeometries) * Math.PI * 2) * radius)
@@ -212,45 +116,21 @@ octa.position.set(Math.cos((5 / numGeometries) * Math.PI * 2) * radius, 0,
 const octaTweaks = gui.addFolder('Octahedron')
 
 octaTweaks
-    .add(octaMaterial,'wireframe')
-    .name('Wireframe')
-
-octaTweaks
     .add(octa, 'visible')
     .name('Visibility')
 
-octaTweaks
-    .addColor(debugObject, 'color')
-    .onChange(() => {
-        octaMaterial.color.set(debugObject.color)
-    })
-    .name('Color')
-
-
 //Cone
- const coneGeometry = new THREE.ConeGeometry(1, 1, 8)
- const coneMaterial = new THREE.MeshBasicMaterial({color: debugObject.color})
- const cone = new THREE.Mesh(coneGeometry, coneMaterial) 
- coneMaterial.wireframe = true
+const coneGeometry = new THREE.ConeGeometry(1, 1, 8)
+const cone = new THREE.Mesh(coneGeometry, material) 
  
  cone.position.set(Math.cos((6 / numGeometries) * Math.PI * 2) * radius, 0,
   Math.sin((6 / numGeometries) * Math.PI * 2) * radius)
 
 const coneTweaks = gui.addFolder('Cone')
-coneTweaks
-    .add(coneMaterial,'wireframe')
-    .name('Wireframe')
 
 coneTweaks
     .add(cone, 'visible')
     .name('Visibility')
-
-coneTweaks
-    .addColor(debugObject, 'color')
-    .onChange(() => {
-        coneMaterial.color.set(debugObject.color)
-    })
-    .name('Color')
 
 geometryGroup.add(box, ico, sphere, torus, octa, cone)
 
