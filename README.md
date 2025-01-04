@@ -6,4 +6,4 @@ Geometrical figures are fun and have many properties.
 
 Have fun discovering them and making modifications to their textures and visibility. 👇🏽
 
-https://github.com/user-attachments/assets/12ab0452-09d6-4d9c-a18a-611fb894f460
+https://github.com/user-attachments/assets/274417bc-440c-42d2-b5bc-13fa2e1c104e
