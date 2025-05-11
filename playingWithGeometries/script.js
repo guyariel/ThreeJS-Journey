@@ -24,7 +24,7 @@ const textures = [
  * GUI
  */
 const gui = new GUI({
-    title: 'Geometries Controler',
+    title: 'Geometries Controler by Juttacci',
     closeFolders: true
 })
 gui.close()
@@ -45,7 +45,7 @@ scene.fog = new THREE.Fog(0xa0a0a0, 10, 50);
  */
 // Ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.9)
-gui.add(ambientLight, 'intensity').min(0).max(3).step(0.001)
+gui.add(ambientLight, 'intensity').min(0).max(3).step(0.001).name('Light Intensity')
 scene.add(ambientLight)
 
 
